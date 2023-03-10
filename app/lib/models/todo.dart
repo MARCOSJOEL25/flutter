@@ -13,6 +13,13 @@ class todo {
       todo(id: "04", todoText: "Team meeting"),
       todo(id: "05", todoText: "Work on mobile apps for 2 hour"),
       todo(id: "06", todoText: "Dinner with Jenny"),
+      todo(id: "06", todoText: "Dinner with Jenny"),
+      todo(id: "06", todoText: "Dinner with Jenny"),
+      todo(id: "06", todoText: "Dinner with Jenny"),
+      todo(id: "06", todoText: "Dinner with Jenny"),
+      todo(id: "06", todoText: "Dinner with Jenny"),
+      todo(id: "06", todoText: "Dinner with Jenny"),
+      todo(id: "06", todoText: "Dinner with Jenny"),
     ];
   }
 }
