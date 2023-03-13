@@ -15,6 +15,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final todoList = todo.todolist();
+  final _controllerEdit = TextEditingController();
+  List<todo> _foundList = [];
+
+  @override
+  void initState() {
+    _foundList = todoList;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +33,9 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
           child: Column(
             children: [
-              const searchbox(),
+              searchbox(
+                functionOnChange: _onChangeTextRenderList,
+              ),
               Expanded(
                 child: ListView(
                   children: [
@@ -38,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             fontSize: 30, fontWeight: FontWeight.w700),
                       ),
                     ),
-                    for (todo itemtodo in todoList)
+                    for (todo itemtodo in _foundList)
                       card_todo(
                         todoitem: itemtodo,
                         changedTodo: _handleToDoChange,
@@ -69,8 +78,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                     borderRadius: BorderRadius.circular(10)),
-                child: const TextField(
-                  decoration: InputDecoration(
+                child: TextField(
+                  controller: _controllerEdit,
+                  decoration: const InputDecoration(
                       hintText: 'Add a new todo item',
                       border: InputBorder.none),
                 ),
@@ -79,7 +89,9 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               margin: const EdgeInsets.only(bottom: 20, right: 20),
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  _addTodo();
+                },
                 child: Text(
                   '+',
                   style: TextStyle(fontSize: 32),
@@ -104,6 +116,32 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       todoList.removeWhere((item) => item.id == Id);
     });
+  }
+
+  void _onChangeTextRenderList(String value) {
+    List<todo> result;
+    if (value.isEmpty) {
+      result = todoList;
+    } else {
+      result = todoList
+          .where((item) =>
+              item.todoText!.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+    }
+
+    setState(() {
+      _foundList = result;
+    });
+  }
+
+  void _addTodo() {
+    setState(() {
+      todoList.add(todo(
+          id: DateTime.now().millisecond.toString(),
+          todoText: _controllerEdit.text,
+          isDone: false));
+    });
+    _controllerEdit.clear();
   }
 
   AppBar _gustombarapp() {
@@ -131,8 +169,11 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class searchbox extends StatelessWidget {
+  final functionOnChange;
+
   const searchbox({
     super.key,
+    this.functionOnChange,
   });
 
   @override
@@ -141,8 +182,9 @@ class searchbox extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(20)),
-      child: const TextField(
-        decoration: InputDecoration(
+      child: TextField(
+        onChanged: (value) => functionOnChange(value),
+        decoration: const InputDecoration(
           contentPadding: EdgeInsets.all(0),
           prefixIcon: Icon(
             Icons.search,
